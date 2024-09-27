@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoetu - Upload Your Pictures</title>
+    <title>Hoetu - Text Messaging</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <header>
         <h1>Welcome to Hoetu</h1>
-        <p>Upload your pictures easily!</p>
+        <p>Send your messages easily!</p>
     </header>
     
     <main>
-        <form id="uploadForm" enctype="multipart/form-data">
-            <label for="fileInput">Choose an image to upload:</label>
-            <input type="file" id="fileInput" name="fileInput" accept="image/*" required>
-            <button type="submit">Upload</button>
+        <form id="messageForm">
+            <label for="messageInput">Type your message:</label>
+            <textarea id="messageInput" name="messageInput" required></textarea>
+            <button type="submit">Send</button>
         </form>
-        <div id="previewContainer">
-            <h2>Image Preview:</h2>
-            <img id="imagePreview" src="#" alt="Image Preview" style="display: none;">
+        <div id="messagesContainer">
+            <h2>Messages:</h2>
+            <ul id="messagesList"></ul>
         </div>
     </main>
 
@@ -29,20 +29,35 @@
     </footer>
 
     <script>
-        const fileInput = document.getElementById('fileInput');
-        const imagePreview = document.getElementById('imagePreview');
+        const messageForm = document.getElementById('messageForm');
+        const messageInput = document.getElementById('messageInput');
+        const messagesList = document.getElementById('messagesList');
 
-        fileInput.addEventListener('change', function() {
-            const file = fileInput.files[0];
-            if (file) {
-                const reader = new FileReader();
-                reader.onload = function(e) {
-                    imagePreview.src = e.target.result;
-                    imagePreview.style.display = 'block';
-                }
-                reader.readAsDataURL(file);
-            }
+        messageForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const message = messageInput.value;
+
+            // Send message to the server
+            await fetch('/send-message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message }),
+            });
+
+            // Clear input
+            messageInput.value = '';
+            loadMessages();
         });
+
+        async function loadMessages() {
+            const response = await fetch('/messages');
+            const messages = await response.json();
+            messagesList.innerHTML = messages.map(msg => `<li>${msg}</li>`).join('');
+        }
+
+        loadMessages();
     </script>
 </body>
 </html>
