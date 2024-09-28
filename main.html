@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hoetu Chatbot</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        #chatbox {
+            width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background: white;
+            padding: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        #messages {
+            height: 300px;
+            overflow-y: auto;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            padding: 5px;
+            border-radius: 5px;
+        }
+        #userInput {
+            width: calc(100% - 90px);
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        #sendButton {
+            padding: 10px 15px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        #sendButton:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+
+<div id="chatbox">
+    <div id="messages"></div>
+    <input type="text" id="userInput" placeholder="Ask a question...">
+    <button id="sendButton" onclick="sendMessage()">Send</button>
+</div>
+
+<script>
+    const responses = {
+    "What is a computer?": "A computer is an electronic device that processes data and performs tasks according to a set of instructions.",
+    "What is programming?": "Programming is the process of creating a set of instructions that tell a computer how to perform a task.",
+    "What is an algorithm?": "An algorithm is a step-by-step procedure for solving a problem or accomplishing a task.",
+    "What is data structure?": "A data structure is a way of organizing and storing data so that it can be accessed and modified efficiently.",
+    "What is a database?": "A database is an organized collection of data, generally stored and accessed electronically from a computer system.",
+    "What is an operating system?": "An operating system is system software that manages computer hardware and software resources and provides common services for computer programs.",
+    "What is a programming language?": "A programming language is a formal set of instructions that can be used to produce various kinds of output, including software applications.",
+    "What is a compiler?": "A compiler is a program that translates code written in a high-level programming language into machine code.",
+    "What is an interpreter?": "An interpreter is a program that executes instructions written in a programming or scripting language without requiring them to be compiled.",
+    "What is a variable?": "A variable is a storage location identified by a name that can hold a value that may change during program execution.",
+    "What is a function?": "A function is a block of code that performs a specific task and can be reused throughout a program.",
+    "What is recursion?": "Recursion is a programming technique where a function calls itself to solve a problem.",
+    "What is object-oriented programming?": "Object-oriented programming (OOP) is a programming paradigm based on the concept of 'objects', which can contain data and code.",
+    "What is a class?": "A class is a blueprint for creating objects in object-oriented programming, defining properties and methods.",
+    "What is an object?": "An object is an instance of a class in object-oriented programming, containing data and methods.",
+    "What is inheritance?": "Inheritance is a mechanism in OOP that allows one class to inherit properties and methods from another class.",
+    "What is polymorphism?": "Polymorphism is the ability of different classes to be treated as instances of the same class through a common interface.",
+    "What is encapsulation?": "Encapsulation is the bundling of data and methods that operate on that data within one unit, restricting access to some components.",
+    "What is a framework?": "A framework is a platform for developing software applications, providing a foundation and set of tools for building applications.",
+    "What is an API?": "An API (Application Programming Interface) is a set of rules and protocols for building and interacting with software applications.",
+    "What is a web server?": "A web server is a server that stores, processes, and delivers web pages to clients over the internet.",
+    "What is HTML?": "HTML (HyperText Markup Language) is the standard markup language for creating web pages.",
+    "What is CSS?": "CSS (Cascading Style Sheets) is a style sheet language used for describing the presentation of a document written in HTML.",
+    "What is JavaScript?": "JavaScript is a high-level, dynamic programming language commonly used for creating interactive effects within web browsers.",
+    "What is a URL?": "A URL (Uniform Resource Locator) is the address used to access resources on the internet.",
+    "What is HTTP?": "HTTP (HyperText Transfer Protocol) is an application protocol for distributed, collaborative, hypermedia information systems.",
+    "What is HTTPS?": "HTTPS (HyperText Transfer Protocol Secure) is an extension of HTTP that uses encryption for secure communication over a computer network.",
+    "What is a cookie?": "A cookie is a small piece of data stored on the user's computer by the web browser while browsing a website.",
+    "What is a session?": "A session is a temporary and interactive information interchange between two or more communicating devices.",
+    "What is a database schema?": "A database schema is the structure that defines the organization of data in a database.",
+    "What is normalization?": "Normalization is the process of organizing data in a database to reduce redundancy and improve data integrity.",
+    "What is a primary key?": "A primary key is a unique identifier for a record in a database table.",
+    "What is a foreign key?": "A foreign key is a field in one table that uniquely identifies a row of another table.",
+    "What is SQL?": "SQL (Structured Query Language) is a standard programming language for managing and manipulating databases.",
+    "What is a join in SQL?": "A join is a SQL operation that combines rows from two or more tables based on a related column.",
+    "What is a transaction?": "A transaction is a sequence of operations performed as a single logical unit of work in a database.",
+    "What is ACID?": "ACID is a set of properties that guarantee that database transactions are processed reliably: Atomicity, Consistency, Isolation, Durability.",
+    "What is a NoSQL database?": "A NoSQL database is a non-relational database that stores data in a format other than tabular relations.",  
+    "What is a software framework?": "A software framework is a platform for developing software applications, providing a foundation on which developers can build programs.",
+    "What is an API?": "An API (Application Programming Interface) is a set of rules that allows different software entities to communicate with each other.",
+    "What is REST?": "REST (Representational State Transfer) is an architectural style for designing networked applications using stateless communication.",
+    "What is JSON?": "JSON (JavaScript Object Notation) is a lightweight data interchange format that is easy for humans to read and write.",
+    "What is XML?": "XML (eXtensible Markup Language) is a markup language that defines rules for encoding documents in a format that is both human-readable and machine-readable.",
+    "What is a web server?": "A web server is a server that stores, processes, and delivers web pages to clients.",
+    "What is a client-server model?": "The client-server model is a network architecture where a server provides resources or services, and clients request them.",
+    "What is cloud computing?": "Cloud computing is the delivery of computing services over the internet, allowing for on-demand access to resources.",
+    "What is virtualization?": "Virtualization is the creation of a virtual version of something, such as a server, storage device, or network resource.",
+    "What is a container?": "A container is a lightweight, standalone, executable package that includes everything needed to run a piece of software.",
+    "What is Docker?": "Docker is a platform that uses containerization to allow developers to package applications and their dependencies into containers.",
+    "What is Kubernetes?": "Kubernetes is an open-source container orchestration platform for automating the deployment, scaling, and management of containerized applications.",
+    "What is machine learning?": "Machine learning is a subset of artificial intelligence that enables systems to learn from data and improve their performance over time.",
+    "What is deep learning?": "Deep learning is a subset of machine learning that uses neural networks with many layers to analyze various factors of data.",
+    "What is natural language processing?": "Natural language processing (NLP) is a field of artificial intelligence that focuses on the interaction between computers and humans through natural language.",
+    "What is a neural network?": "A neural network is a series of algorithms that attempt to recognize underlying relationships in a set of data through a process that mimics the way the human brain operates.",
+    "What is supervised learning?": "Supervised learning is a type of machine learning where a model is trained on labeled data.",
+    "What is unsupervised learning?": "Unsupervised learning is a type of machine learning where a model is trained on unlabeled data to find patterns.",
+    "What is reinforcement learning?": "Reinforcement learning is a type of machine learning where an agent learns to make decisions by taking actions in an environment to maximize cumulative reward.",
+    "What is a decision tree?": "A decision tree is a flowchart-like structure used for decision-making and predictive modeling.",
+    "What is overfitting?": "Overfitting occurs when a machine learning model learns the training data too well, including noise and outliers, leading to poor performance on new data.",
+    "What is underfitting?": "Underfitting occurs when a machine learning model is too simple to capture the underlying trend of the data.",
+    "What is cross-validation?": "Cross-validation is a technique for assessing how the results of a statistical analysis will generalize to an independent data set.",
+    "What is a confusion matrix?": "A confusion matrix is a table used to evaluate the performance of a classification model by comparing predicted and actual values.",
+    "What is precision?": "Precision is the ratio of true positive predictions to the total predicted positives, indicating the accuracy of positive predictions.",
+    "What is recall?": "Recall is the ratio of true positive predictions to the total actual positives, indicating the ability of a model to find all relevant cases.",
+    "What is F1 score?": "The F1 score is the harmonic mean of precision and recall, providing a balance between the two metrics.",
+    "What is a hyperparameter?": "A hyperparameter is a parameter whose value is set before the learning process begins and is not learned from the data.",
+    "What is feature engineering?": "Feature engineering is the process of using domain knowledge to select, modify, or create features that make machine learning algorithms work better.",
+    "What is a dataset?": "A dataset is a collection of data, often presented in tabular form, used for analysis or training machine learning models.",
+    "What is data preprocessing?": "Data preprocessing is the process of cleaning and transforming raw data into a format suitable for analysis.",
+    "What is data visualization?": "Data visualization is the graphical representation of information and data, using visual elements like charts and graphs.",
+    "What is a scatter plot?": "A scatter plot is a type of data visualization that uses dots to represent the values obtained for two different variables.",
+    "What is a histogram?": "A histogram is a graphical representation of the distribution of numerical data, showing the frequency of data points within specified ranges.",
+    "What is a bar chart?": "A bar chart is a visual representation of
+    const oneWordQA = {
+    "Computer?": "An electronic device that processes data.",
+    "Algorithm?": "A step-by-step procedure for solving a problem.",
+    "Data?": "Information processed or stored by a computer.",
+    "Network?": "A group of interconnected computers.",
+    "Database?": "An organized collection of data.",
+    "Programming?": "The process of writing code to create software.",
+    "Software?": "Programs and applications that run on a computer.",
+    "Hardware?": "The physical components of a computer.",
+    "Cloud?": "Remote servers used to store and manage data.",
+    "Security?": "Measures taken to protect data and systems.",
+    "Encryption?": "The process of converting information into code.",
+    "Machine?": "A device that performs work or tasks.",
+    "Learning?": "The process of acquiring knowledge or skills.",
+    "AI?": "Artificial Intelligence; machines simulating human intelligence.",
+    "Robot?": "A machine capable of carrying out complex tasks.",
+    "Internet?": "A global network connecting millions of computers.",
+    "Protocol?": "A set of rules for data communication.",
+    "API?": "Application Programming Interface; a set of tools for building software.",
+    "Framework?": "A platform for developing software applications.",
+    "Java?": "A high-level programming language.",
+    "Python?": "A versatile programming language known for its readability.",
+    "C++?": "An extension of the C programming language.",
+    "HTML?": "HyperText Markup Language; used for creating web pages.",
+    "CSS?": "Cascading Style Sheets; used for styling web pages.",
+    "JavaScript?": "A programming language for web development.",
+    "SQL?": "Structured Query Language; used for managing databases.",
+    "NoSQL?": "Non-relational databases designed for unstructured data.",
+    "Bigdata?": "Extremely large data sets analyzed for insights.",
+    "Analytics?": "The discovery and interpretation of meaningful patterns in data.",
+    "Visualization?": "The graphical representation of information.",
+    "Modeling?": "Creating a representation of a system or process.",
+    "Simulation?": "Imitating the operation of a real-world process.",
+    "Testing?": "The process of evaluating software for defects.",
+    "Debugging?": "Identifying and fixing bugs in software.",
+    "Versioning?": "Managing changes to software over time.",
+    "Repository?": "A storage location for software packages.",
+    "Git?": "A version control system for tracking changes in code.",
+    "DevOps?": "A set of practices combining software development and IT operations.",
+    "Agile?": "An iterative approach to software development.",
+    "Scrum?": "An Agile framework for managing projects.",
+    "Kanban?": "A visual system for managing work as it moves through a process.",
+    "Deployment?": "The process of making software available for use.",
+    "Integration?": "Combining different systems or software applications.",
+    "Continuous?": "A method of software development that emphasizes ongoing updates.",
+    "Delivery?": "The process of delivering software to users.",
+    "Microservices?": "An architectural style that structures an application as a collection of loosely coupled services.",
+    "Containerization?": "Packaging software code and its dependencies together.",
+    "Docker?": "A platform for developing, shipping, and running applications in containers.",
+    "Kubernetes?": "An open-source system for automating the deployment of containerized applications.",
+    "Virtualization?": "Creating a virtual version of a device or resource.",
+    "Cloudflare?": "A service that provides content delivery network and DDoS mitigation.",
+    "AWS?": "Amazon Web Services; a cloud computing platform.",
+    "Azure?": "Microsoft's cloud computing service.",
+    "Google?": "A multinational technology company specializing in Internet-related services.",
+    "Firebase?": "A platform developed by Google for creating mobile and web applications.",
+    "Blockchain?": "A decentralized digital ledger of transactions.",
+    "Cryptocurrency?": "Digital or virtual currency that uses cryptography for security.",
+    "Bitcoin?": "The first decentralized cryptocurrency.",
+    "Ethereum?": "A decentralized platform that enables smart contracts.",
+    "Smart?": "Devices connected to the Internet that can collect and exchange data.",
+    "IoT?": "Internet of Things; the network of physical devices connected to the Internet.",
+    "Firmware?": "Software programmed into hardware devices.",
+    "Malware?": "Malicious software designed to harm or exploit devices.",
+    "Phishing?": "A method of trying to gather personal information using deceptive emails.",
+    "Spyware?": "Software that secretly monitors user activity.",
+    "Adware?": "Software that automatically displays or downloads advertisements.",
+    "Ransomware?": "Malware that encrypts files and demands payment for decryption.",
+    "Trojan?": "Malicious software disguised as legitimate software.",
+    "Virus?": "A type of malware that replicates itself by infecting other files.",
+    "Worm?": "A standalone malware that replicates itself to spread to other computers.",
+    "Firewall?": "A network security system that monitors and controls incoming and outgoing traffic.",
+    "Antivirus?": "Software designed to",
+     const hoetuChatbotQA = {
+    "Who are you?": "I am Hoetu, an AI-powered chatbot assistant created to help you with a variety of tasks.",
+    "What can you do?": "I can assist you with information lookup, task planning, scheduling, note-taking, and much more. Just ask me anything!",
+    "How do I get started?": "To get started, you can ask me questions or give me commands. I'll do my best to understand and respond helpfully.",
+    "What's the weather today?": "Let me check the weather forecast for your location. It looks like it will be [weather description] today with a high of [temperature] degrees.",
+    "Set a reminder for me": "Okay, what would you like me to remind you about and when?",
+    "Take a note": "Sure, what would you like me to note down?",
+    "What's the capital of France?": "The capital of France is Paris.",
+    "How do I get to the nearest grocery store?": "Here are the directions to the nearest grocery store: [provide step-by-step directions].",
+    "Convert 10 miles to kilometers": "Okay, 10 miles is equal to approximately 16.09 kilometers.",
+    "What is the square root of 64?": "The square root of 64 is 8.",
+    "Tell me a joke": "Okay, here's a good one: Why can't a bicycle stand up by itself? It's two tired!",
+    "Play some music": "Unfortunately, I don't have the capability to play music directly. However, I can provide you with information on how to access music streaming services.",
+    "Set an alarm for 7 AM": "Alright, I've set an alarm for 7 AM. Let me know if you need anything else!",
+    "What is the population of China?": "The current population of China is approximately 1.41 billion people.",
+    "Who is the president of the United States?": "The current president of the United States is Joe Biden.",
+    "How do I make a grilled cheese sandwich?": "Here are the steps to make a grilled cheese sandwich:
+1. Gather the ingredients: bread, cheese, butter.
+2. Butter the outside of the bread slices.
+3. Place the cheese between the bread slices.
+4. Heat a skillet over medium heat.
+5. Place the sandwich in the skillet and cook for 2-3 minutes per side, or until the bread is golden brown and the cheese is melted.
+6. Enjoy your grilled cheese sandwich!",
+    "What is the capital of Australia?": "The capital of Australia is Canberra.",
+    "How do I change a flat tire?": "Here are the steps to change a flat tire:
+1. Find a safe place to pull over and park on a level surface.
+2. Engage the parking brake and turn off the engine.
+3. Locate the spare tire, jack, and lug wrench.
+4. Loosen the lug nuts on the flat tire, but don't remove them yet.
+5. Place the jack under the vehicle according to the owner's manual.
+6. Raise the vehicle until the flat tire is off the ground.
+7. Remove the lug nuts and the flat tire.
+8. Place the spare tire on the lug bolts and hand-tighten the lug nuts.
+9. Lower the vehicle until the tire is on the ground.
+10. Tighten the lug nuts in a star or criss-cross pattern.
+11. Stow the flat tire and tools.
+Let me know if you need any clarification on the steps!",
+    "How do I reset my Wi-Fi password?": "To reset your Wi-Fi password, follow these steps:
+1. Locate your router and find the reset button, usually on the back or bottom of the device.
+2. Press and hold the reset button for 10-15 seconds until the router's lights start blinking.
+3. This will reset the router to its factory default settings, including the Wi-Fi password.
+4. Refer to your router's documentation or manufacturer's website to find the default Wi-Fi password.
+5. Once you have the new password, connect your devices to the Wi-Fi network using the updated credentials.
+Let me know if you have any other questions!",
+    "What is the capital of Japan?": "The capital of Japan is Tokyo.",
+    "How do I create a strong password?": "Here are some tips for creating a strong password:
+- Use a mix of uppercase and lowercase letters, numbers, and special characters.
+- Avoid using common words, phrases, or personal information.
+- Make the password at least 12 characters long.
+- Consider using a passphrase, which is a sequence of words that is easy to remember but hard to guess.
+- Avoid reusing the same password across multiple accounts.
+- Consider using a password manager to generate and store strong, unique passwords for all your accounts.",
+    "What is the currency of the United Kingdom?": "The currency of the United Kingdom is the British pound sterling (GBP).",
+    "How do I update my computer's operating system?": "To update your computer's operating system, follow these steps:
+1. Make sure your computer is connected to the internet.
+2. Open your computer's settings or control panel.
+3. Look for an option to check for updates or system updates.
+4. If there are any available updates, follow the on-screen instructions to download and install them.
+5. Your computer may need to restart to complete the update process.
+6. Once the update is finished, your operating system will be up-to-date.
+Let me know if you have any trouble with the update process.",
+    "What is the tallest mountain in the world?": "The tallest mountain in the world is Mount Everest, which is located on the border of Nepal and Tibet (China). Mount Everest has a peak elevation of 29,032 feet (8,849 meters) above sea level.",
+    "How do I save a file in Microsoft Word?": "To save a file in Microsoft Word, follow these steps:
+1. Click on the File menu in the top-left corner of the Word window.
+2. Select the Save or Save As option.
+3. Choose the location on your computer where you want to save the file.
+4. Enter a file name for your document.
+5. Click the Save button to save the file.
+You can also use the keyboard shortcut Ctrl+S (Windows) or Command+S (Mac) to save your file quickly.",
+    "What is the largest ocean in the world?": "The largest ocean in the world is the Pacific Ocean.",
+    "How do I create a new folder on my computer?": "To create a new folder on your computer, follow these steps:
+1. Open the file explorer or finder on your computer.
+2. Navigate to the location where you want to create the new folder.
+3. Right-click in the empty space and select "New" and then "Folder".
+4. A new folder will be created, and you can rename it to whatever you'd like.",
+    "What is the chemical symbol for gold?": "The chemical symbol for gold is Au.",
+    "How do I attach a file to an email?": "To attach a file to an email, follow these steps:
+1. Compose a new email or open an existing one.
+2. Click on the paperclip icon or the "Attach" button, usually located near the bottom of the email composer.
+3. In the file explorer or finder, navigate to the file you want to attach.
+4. Select the file and click "Open" or "Attach".
+5. The file will now be attached to your email and ready to send.",
+    "What is the largest planet in our solar system?": "The largest planet in our solar system is Jupiter.",
+    "How do I change the background on my computer?": "To change the background (wallpaper) on your computer, follow these steps:
+1. Right-click on the desktop and select "Personalize" or "Change background".
+2. In the personalization settings, you'll see options to choose a new background image.
+3. You can select a pre-installed image, or browse your computer to find an image you'd like to use.
+4. Once you've selected the image, click "Apply" to set the new background.
+5. You can also adjust the background display settings, such as fit, fill, or stretch, to customize the appearance.",
+    "What is the chemical symbol for water?": "The chemical symbol for water is H2O.",
+    "How do I take a screenshot on my computer?": "To take a screenshot on your computer, follow these steps:
+Windows:
+1. Press the "Print Screen" (or "PrtScn") button on your keyboard.
+2. Open an image editing program like Paint or Photoshop.
+3. Paste the screenshot by pressing Ctrl+V.
+4. Save the image.
+
+Mac:
+1. Press Command+Shift+3 to capture the entire screen.
+2. Press Command+Shift+4, then click and drag to select an area to capture.
+3. The screenshot will be saved to your desktop.",
+    "What is the largest continent in the world?": "The largest continent in the world is Asia.",
+    "How do I connect to a Wi-Fi network?": "To connect to a Wi-Fi network, follow these steps:
+1. Make sure your device's Wi-Fi is turned on.
+2. Look for the Wi-Fi icon in your device's settings or taskbar.
+3. Click or tap on the Wi-Fi icon to see a list of available networks.
+4. Select the network you want to connect to.
+5. If the network is secured, enter the password when prompted.
+6. Once connected, your device will automatically reconnect to the same network in the future.",
+    "What is the symbol for the chemical element oxygen?": "The symbol for the chemical element oxygen is O.",
+    "How do I download a file from the internet?": "To download a file from the internet, follow these steps:
+1. Locate the file you want to download, such as a document, image, or video.
+2. Right-click (or control-click on a Mac) on the file and select "Save As" or "Download".
+3. Choose the location on your computer where you want to save the file.
+4. Click "Save" or "Download" to begin the download process.
+5. Once the download is complete, you can find the file in the location you specified.",
+    "What is the largest moon of Saturn?": "The largest moon of Saturn is Titan.",
+    "How do I send an email?": "To send an email, follow these steps:
+1. Open your email client or web-based email service.
+2. Click the "Compose" or "New Email" button.
+3. In the "To" field, enter the email address of the recipient.
+4. Add a subject line in the "Subject" field.
+5. Type your message in the body of the email.
+6. If you want to attach a file, click the "Attach" or "Paperclip" icon and select the file.
+7. Review your email for any errors or missing information.
+8. Click the "Send" button to send the email.",
+    "What is the chemical symbol for sodium?": "The chemical symbol for sodium is Na.",
+    "How do I create a new document in Microsoft Word?": "To create a new document in Microsoft Word, follow these steps:
+1. Open Microsoft Word on your computer.
+2. In the Word start screen or menu, select "Blank document" or click the "New" button.
+3. A new, blank document will open, and you can begin typing your content.
+4. Remember to save your document regularly by clicking the "Save" button or using the keyboard shortcut Ctrl+S (Windows) or Command+S (Mac).",
+    "What is the largest ocean on Earth?": "The largest ocean on Earth is the Pacific Ocean.",
+    "How do I print a document?": "To print a document, follow these steps:
+1. Open the document you want to print.
+2. Click the "File" menu and select "Print" or use the keyboard shortcut Ctrl+P (Windows) or Command+P (Mac).
+3. In the print dialog box, select your printer from the list.
+4. Adjust any print settings, such as the number of copies, page range, or paper size.
+5. Click the "Print" button to send the document to your printer.",
+    "What is the chemical symbol for carbon?": "The chemical symbol for carbon is C.",
+    "How do I save a file to a USB drive?": "To save a file to a USB drive, follow these steps:
+1. Insert the USB drive into an available USB port on your computer.
+2. Open the file you want to save.
+3. Click the "File" menu and select "Save As".
+4. In the save dialog box, locate the USB drive in the list of available locations.
+5. Select the USB drive and choose a folder or location to save the file.
+6. Click "Save" to save the file to the USB drive.",
+    "What is the largest continent by land area?": "The largest continent by land area is Asia.",
+    "How do I open a PDF file?": "To open a PDF file, you can use a PDF reader application such as Adobe Acrobat Reader, Foxit Reader, or the built-in PDF viewer in your web browser. Here are the general steps:
+1. Locate the PDF file on your computer.
+2. Double-click the PDF file to open it, or right-click and select "Open with" and choose your preferred PDF reader.
+3. The PDF file will open in the PDF reader application, and you can view, navigate, and interact with the content.",
+    "What is the chemical symbol for iron?": "The chemical symbol for iron is Fe.",
+    "How do I create a new folder on my desktop?": "To create a new folder on your desktop, follow these steps:
+1. Right-click on an empty area of your desktop.
+2. In the context menu, select "New" and then "Folder".
+3. A new folder will be created on your desktop, and you can rename it by clicking on the folder name and typing a new name.",
+    "What is the largest planet in our solar system?": "The largest planet in our solar system is Jupiter.",
+    "How do I change the font in a Microsoft Word document?": "To change the font in a Microsoft Word document, follow these steps:
+1. Select the text you want to change.
+2. Look for the "Font" dropdown menu in the Home tab of the ribbon.
+3. Click the dropdown and select the desired font from the list.
+4. You can also adjust the font size, style (bold, italic, underline), and other formatting options in the Font section.",
+    "What is the chemical symbol for gold?": "The chemical symbol for gold is Au.",
+      const hoetuChatbotQA = {
+    // Previous entries...
+    
+    "How do I create a new email account?": "To create a new email account, follow these steps: 1. Choose an email service provider, such as Gmail or Yahoo. 2. Go to their website and click on 'Sign Up' or 'Create Account'. 3. Fill in the required information, such as your name, desired email address, and password. 4. Follow the prompts to complete the registration process.",
+    "What is the largest ocean on Earth?": "The largest ocean on Earth is the Pacific Ocean.",
+    "How do I reset my password?": "To reset your password, go to the login page of the service, click on 'Forgot Password?', and follow the instructions to reset it via your email or phone number.",
+    "What is the boiling point of water?": "The boiling point of water is 100 degrees Celsius (212 degrees Fahrenheit) at sea level.",
+    "How do I uninstall a program on Windows?": "To uninstall a program on Windows, go to 'Control Panel', select 'Programs', then 'Programs and Features', find the program you want to uninstall, and click 'Uninstall'.",
+    "What is the fastest land animal?": "The fastest land animal is the cheetah.",
+    "How do I take a screenshot on my computer?": "To take a screenshot on Windows, press the 'PrtScn' key. On Mac, press 'Command + Shift + 4' to select the area you want to capture.",
+    "What is the capital of Japan?": "The capital of Japan is Tokyo.",
+    "How do I clear my browser cache?": "To clear your browser cache, go to your browser settings, find 'Privacy' or 'History', and select 'Clear Browsing Data'. Choose 'Cached images and files' and click 'Clear Data'.",
+    "What is the smallest country in the world?": "The smallest country in the world is Vatican City.",
+    "How do I change my profile picture on Facebook?": "To change your profile picture on Facebook, go to your profile, click on your current profile picture, select 'Update Profile Picture', and choose a new photo.",
+    "What is the main ingredient in guacamole?": "The main ingredient in guacamole is avocado.",
+    "How do I block someone on Twitter?": "To block someone on Twitter, go to their profile, click on the three dots (More options), and select 'Block'.",
+    "What is the longest river in the world?": "The longest river in the world is the Nile River.",
+    "How do I enable two-factor authentication?": "To enable two-factor authentication, go to your account settings, find the security section, and follow the prompts to set it up using your phone number or an authentication app.",
+    "What is the primary language spoken in Brazil?": "The primary language spoken in Brazil is Portuguese.",
+    "How do I find my IP address?": "To find your IP address, you can search 'What is my IP address' in a search engine, or you can check your network settings on your device.",
+    "What is the tallest mountain in the world?": "The tallest mountain in the world is Mount Everest.",
+    "How do I create a backup of my files?": "To create a backup of your files, you can use an external hard drive or cloud storage service. Simply copy your important files to the backup location.",
+    "What is the currency of Japan?": "The currency of Japan is the yen (JPY).",
+    "How do I update my software?": "To update your software, go to the application settings and look for an 'Update' option. Follow the prompts to install the latest version.",
+    "What is the main function of the heart?": "The main function of the heart is to pump blood throughout the body.",
+    "How do I change my email address on Amazon?": "To change your email address on Amazon, go to 'Your Account', select 'Login & Security', and click 'Edit' next to your email address.",
+    "What is the fastest marine animal?": "The fastest marine animal is the black marlin.",
+    "How do I find a lost phone?": "To find a lost phone, use a phone tracking service like 'Find My iPhone' for Apple devices or 'Find My Device' for Android devices.",
+    "What is the primary ingredient in sushi?": "The primary ingredient in sushi is vinegared rice.",
+    "How do I change my password on Instagram?": "To change your password on Instagram, go to your profile, tap on 'Settings', select 'Security', and then 'Password'. Follow the prompts to change it.",
+    "What is the largest desert in the world?": "The largest desert in the world is the Antarctic Desert.",
+    "How do I set up a meeting on Zoom?": "To set up a meeting on Zoom, log in to your account, click on 'Schedule a Meeting', fill in the details, and click 'Save'.",
+    "What is the main ingredient in bread?": "The main ingredient in bread is flour.",
+    "How do I delete my Twitter account?": "To delete your Twitter account, go to 'Settings and Privacy', select 'Your Account', and click on 
+    };
+
+    function sendMessage() {
+        const userInput = document.getElementById("userInput").value;
+        const messagesDiv = document.getElementById("messages");
+        
+        // Display user message
+        messagesDiv.innerHTML += `<div>User: ${userInput}</div>`;
+        
+        // Get bot response
+        const response = responses[userInput] || "I'm sorry, I don't have an answer for that.";
+        
+        // Display bot response
+        messagesDiv.innerHTML += `<div>Bot: ${response}</div>`;
+        
+        // Clear input
+        document.getElementById("userInput").value = "";
+        
+        // Scroll to the bottom
+        messagesDiv.scrollTop = messagesDiv.scrollHeight;
+    }
+</script>
+
+</body>
+</html>
