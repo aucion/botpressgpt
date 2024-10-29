@@ -1,3 +1,4 @@
+/* General body styling */
 body {
     font-family: Arial, sans-serif;
     background-color: white;
@@ -6,6 +7,7 @@ body {
     padding: 0;
 }
 
+/* Header styling */
 header {
     background-color: #007BFF; /* Blue header */
     color: white;
@@ -13,22 +15,27 @@ header {
     text-align: center;
 }
 
+/* Main content area styling */
 main {
     padding: 20px;
 }
 
+/* Form styling */
 form {
     margin-bottom: 20px;
 }
 
+/* Textarea styling */
 textarea {
     width: 100%;
     height: 100px;
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 4px;
+    resize: vertical; /* Allows resizing vertically only */
 }
 
+/* Button styling */
 button {
     background-color: #007BFF; /* Blue button */
     color: white;
@@ -36,18 +43,38 @@ button {
     padding: 10px 15px;
     border-radius: 4px;
     cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease; /* Smooth transition on hover */
 }
 
 button:hover {
     background-color: #0056b3; /* Darker blue on hover */
 }
 
+/* Messages container styling */
 #messagesContainer {
     border-top: 1px solid #ccc;
     padding-top: 10px;
 }
 
+/* Messages list styling */
 #messagesList {
     list-style-type: none;
     padding: 0;
+    margin: 0;
+}
+
+#messagesList li {
+    padding: 10px;
+    border-bottom: 1px solid #e0e0e0;
+}
+
+#messagesList li.user-message {
+    text-align: right;
+    color: #333;
+}
+
+#messagesList li.bot-message {
+    text-align: left;
+    color: #007BFF;
 }
