@@ -3,62 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Hoetu Chatbot</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-        }
-        #chatbox {
-            width: 400px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            background: white;
-            padding: 10px;
-            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-        }
-        #messages {
-            height: 300px;
-            overflow-y: auto;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            padding: 5px;
-            border-radius: 5px;
-        }
-        #userInput {
-            width: calc(100% - 90px);
-            padding: 10px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        #sendButton {
-            padding: 10px 15px;
-            border: none;
-            border-radius: 5px;
-            background-color: #007bff;
-            color: white;
-            cursor: pointer;
-        }
-        #sendButton:hover {
-            background-color: #0056b3;
-        }
-    </style>
-</head>
+    <title>Hoetu</title>
+    <link rel="stylesheet" href="style.css">
 <body>
-
-<h1>Hoetu Chatbot</h1>
-<div id="chatbox">
-    <div id="messages"></div>
-    <input type="text" id="userInput" placeholder="Ask a question...">
-    <button id="sendButton" onclick="sendMessage()">Send</button>
-</div>
-
-<!-- Link to the JavaScript file -->
-<script src="script.js"></script>
+    <iframe src="https://cdn.botpress.cloud/webchat/v2.2/shareable.html?configUrl=https://files.bpcontent.cloud/2024/11/02/10/20241102100623-SMXK7USN.json" frameborder="0" id="fullScreenIframe"></iframe>
 </body>
 </html>
